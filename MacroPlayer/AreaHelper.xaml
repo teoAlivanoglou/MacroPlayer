@@ -1,0 +1,100 @@
+﻿<Window x:Class="MacroPlayer.AreaHelper"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="clr-namespace:MacroPlayer"
+        xmlns:ab="clr-namespace:AdornerBehavior;assembly=AdornerBehavior"
+        mc:Ignorable="d"
+        AllowsTransparency="True"
+        WindowStyle="None"
+        Title="AreaHelper" Height="450" Width="800"
+        Background="Transparent">
+    <Window.Resources>
+        <Style TargetType="Thumb">
+            <Setter Property="Width" Value="30" />
+            <Setter Property="Height" Value="30" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Thumb">
+                        <Ellipse Fill="White" Stroke="#1a1a1a" StrokeThickness="1" Width="10" Height="10" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    <Canvas>
+        <AdornerDecorator>
+            <Rectangle Fill="Aqua" Width="200" Height="120" Margin="100"
+                       ab:AdornerBehavior.IsEnabled="True"
+                       Name="MyRectangle">
+                <ab:AdornerBehavior.Adorners>
+                    <local:OutlinedTextBlock
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Text="Test"
+                        Fill="White"
+                        Stroke="Black"
+                        StrokeThickness="2"
+                        FontSize="14"
+                        FontWeight="Bold"
+                        ab:AdornerBehavior.HorizontalPlacement="Inside"
+                        ab:AdornerBehavior.VerticalPlacement="Outside" />
+                    <Thumb Style="{StaticResource Foo}"
+                           HorizontalAlignment="Right"
+                           VerticalAlignment="Top"
+                           ab:AdornerBehavior.HorizontalPlacement="Across"
+                           ab:AdornerBehavior.VerticalPlacement="Across" />
+                    <Thumb Style="{StaticResource Foo}"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Top"
+                           ab:AdornerBehavior.HorizontalPlacement="Across"
+                           ab:AdornerBehavior.VerticalPlacement="Across" />
+                    <Thumb Style="{StaticResource Foo}"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Bottom"
+                           ab:AdornerBehavior.HorizontalPlacement="Across"
+                           ab:AdornerBehavior.VerticalPlacement="Across" />
+                    <Thumb Style="{StaticResource Foo}"
+                           HorizontalAlignment="Right"
+                           VerticalAlignment="Bottom"
+                           ab:AdornerBehavior.HorizontalPlacement="Across"
+                           ab:AdornerBehavior.VerticalPlacement="Across" />
+
+                    <Thumb Style="{StaticResource Foo}"
+                           HorizontalAlignment="Right"
+                           VerticalAlignment="Center"
+                           ab:AdornerBehavior.HorizontalPlacement="Across"
+                           ab:AdornerBehavior.VerticalPlacement="Across" />
+
+                    <Thumb Style="{StaticResource Foo}"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Center"
+                           ab:AdornerBehavior.HorizontalPlacement="Across"
+                           ab:AdornerBehavior.VerticalPlacement="Across" />
+
+                    <Thumb Style="{StaticResource Foo}"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Top"
+                           DragDelta="Thumb_OnDragDelta"
+                           ab:AdornerBehavior.HorizontalPlacement="Across"
+                           ab:AdornerBehavior.VerticalPlacement="Across">
+                    </Thumb>
+
+
+                    <local:DirectionalThumb Style="{StaticResource Foo}"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Bottom"
+                        DragDelta="Thumb_OnDragDelta"
+                        Orientation="South"
+                        ab:AdornerBehavior.HorizontalPlacement="Across"
+                        ab:AdornerBehavior.VerticalPlacement="Across">
+                    </local:DirectionalThumb>
+
+
+                </ab:AdornerBehavior.Adorners>
+            </Rectangle>
+
+        </AdornerDecorator>
+    </Canvas>
+</Window>

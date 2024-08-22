@@ -9,7 +9,7 @@
         AllowsTransparency="True"
         WindowStyle="None"
         Title="AreaHelper" Height="450" Width="800"
-        Background="Transparent">
+        Background="#000a1c">
     <Window.Resources>
         <Style TargetType="local:DirectionalThumb">
             <Setter Property="Width" Value="30" />
@@ -32,7 +32,7 @@
         </ItemsControl.ItemsPanel>
         <ItemsControl.ItemTemplate>
             <DataTemplate>
-                <Rectangle Canvas.Left="{Binding  RectArea.Left}" Canvas.Top="{Binding RectArea.Top}" Width="{Binding RectArea.Width}" Height="{Binding RectArea.Height}">
+                <Rectangle Width="{Binding RectArea.Width}" Height="{Binding RectArea.Height}">
                     <Rectangle.Fill>
                         <SolidColorBrush Color="{Binding FillColor}"/>
                     </Rectangle.Fill>

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -14,7 +13,6 @@ public class ViewModel : INotifyPropertyChanged
     {
         clipAreas.Add(new ClipArea(125, 43, 400, 200, "My Clip Area"));
     }
-
 
     public event PropertyChangedEventHandler? PropertyChanged;
 

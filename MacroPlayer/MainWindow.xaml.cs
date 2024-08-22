@@ -29,6 +29,7 @@ namespace MacroPlayer
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
             _areaHelper.Show();
+            // _areaHelper.WindowState = WindowState.Maximized;
         }
     }
 }

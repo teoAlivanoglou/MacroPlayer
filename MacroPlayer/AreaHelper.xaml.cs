@@ -1,33 +1,36 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Shapes;
 
 namespace MacroPlayer;
 
 public partial class AreaHelper : Window
 {
-    ViewModel _viewModel = new ViewModel();
+    private ViewModel _viewModel = ViewModel.Instance; //new ViewModel();
 
     public AreaHelper()
     {
         InitializeComponent();
 
         DataContext = _viewModel;
-        Loaded += (sender, args) =>
-        {
-            var myLayer = AdornerLayer.GetAdornerLayer(TheCanvas);
-
-            for (int i = 0; i < TheCanvas.Items.Count; i++)
-            {
-                Debug.Assert(myLayer != null, nameof(myLayer) + " != null");
-                myLayer.Add(new ResizeAdorner(
-                    (UIElement)TheCanvas.ItemContainerGenerator.ContainerFromIndex(i)
-                ));
-            }
-        };
+        // Loaded += (sender, args) =>
+        // {
+        //     var myLayer = AdornerLayer.GetAdornerLayer(TheCanvas);
+        //
+        //     for (int i = 0; i < TheCanvas.Items.Count; i++)
+        //     {
+        //         Debug.Assert(myLayer != null, nameof(myLayer) + " != null");
+        //         myLayer.Add(new ResizeAdorner(
+        //             (UIElement)TheCanvas.ItemContainerGenerator.ContainerFromIndex(i)
+        //         ));
+        //     }
+        // };
     }
 
     //
@@ -101,4 +104,14 @@ public partial class AreaHelper : Window
     //     MyRectangle.Width = newSize.Width;
     //     MyRectangle.Height = newSize.Height;
     // }
+    private void RectangleLoaded(object sender, RoutedEventArgs e)
+    {
+        var myLayer = AdornerLayer.GetAdornerLayer(TheCanvas);
+
+        Debug.Assert(myLayer != null, nameof(myLayer) + " != null");
+        var rectangleContainer = VisualTreeHelper.GetParent((UIElement)sender);
+
+        Debug.Assert(rectangleContainer != null, nameof(rectangleContainer) + " != null");
+        myLayer.Add(new ResizeAdorner((UIElement)rectangleContainer));
+    }
 }

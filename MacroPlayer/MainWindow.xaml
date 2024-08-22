@@ -4,9 +4,11 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MacroPlayer"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
-
-        Title="MainWindow" Height="450" Width="800">
+        Closed="MainWindow_OnClosed"
+        Title="MainWindow" Height="450" Width="800"
+        d:DataContext="{d:DesignInstance local:ViewModel}">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
@@ -18,9 +20,34 @@
             <RowDefinition />
         </Grid.RowDefinitions>
 
-        <Button Content="Open overlay" Click="ButtonBase_OnClick" Margin="4" Padding="4" FontSize="18" />
-
-        
+        <Button Click="ButtonOpenOverlayClick" Margin="4" Padding="4" FontSize="18">
+            <Button.Style>
+                <Style TargetType="Button">
+                    <Setter Property="Background" Value="Aqua" />
+                    <Setter Property="Content" Value="Open Overlay" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding OverlayOpen}" Value="True">
+                            <Setter Property="Content" Value="Close Overlay" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
+ 
+        <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
+            <Button Content="Add Overlay" HorizontalAlignment="Left" Padding="4" Margin="4" Click="ButtonAddRectClick"/>
+            <ListView ItemsSource="{Binding clipAreas}" HorizontalContentAlignment="Stretch"
+                      SelectedItem="{Binding SelectedItem, Mode=OneWayToSource}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <UniformGrid Columns="2">
+                            <ContentPresenter Content="{Binding Name}" VerticalAlignment="Center"/>
+                            <xctk:ColorPicker SelectedColor="{Binding FillColor}"/>
+                        </UniformGrid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackPanel>
         <!-- <Border Grid.Column="1" Grid.Row="0"> -->
         <!--     <TextBlock Grid.Column="1" Grid.Row="0" Text="My Area Help!" FontSize="14" FontWeight="Bold" -->
         <!--                Foreground="White"> -->

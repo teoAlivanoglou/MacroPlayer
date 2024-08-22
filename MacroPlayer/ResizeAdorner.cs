@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
@@ -29,10 +30,16 @@ public class ResizeAdorner : Adorner
     private GeometryDrawing _textBoxGeometry;
 
     private readonly Rectangle _border;
-    
+
     const double margin = 8;
 
     private FrameworkElement Parent { get; init; }
+
+
+    // public ResizeAdorner()
+    // {
+    //     return;
+    // }
 
     public ResizeAdorner(UIElement adornedElement) : base(adornedElement)
     {
@@ -112,9 +119,9 @@ public class ResizeAdorner : Adorner
         _visualCollection.Add(_outlinedTextBox);
 
 
-        adornedElement.MouseLeftButtonDown += MouseDown;
-        adornedElement.MouseLeftButtonUp += MouseUp;
-        adornedElement.MouseMove += MouseMove;
+        adornedElement.MouseLeftButtonDown += RectangleMouseDown;
+        adornedElement.MouseLeftButtonUp += RectangleMouseUp;
+        adornedElement.MouseMove += RectangleDrag;
     }
 
     private string LastName = String.Empty;
@@ -144,23 +151,29 @@ public class ResizeAdorner : Adorner
     private bool _isRectDragInProg;
     private Point clickOffset;
 
-    void MouseDown(object sender, MouseButtonEventArgs e)
+    void RectangleMouseDown(object sender, MouseButtonEventArgs e)
     {
         _isRectDragInProg = true;
         clickOffset = e.GetPosition(AdornedElement);
 
         ((FrameworkElement)AdornedElement).Cursor = Cursors.SizeAll;
         AdornedElement.CaptureMouse();
+
+        var maxZ =
+            (from UIElement child in ((Canvas)Parent).Children
+                select Panel.GetZIndex(child)).Prepend(0).Max();
+
+        Panel.SetZIndex(AdornedElement, maxZ + 1);
     }
 
-    void MouseUp(object sender, MouseButtonEventArgs e)
+    void RectangleMouseUp(object sender, MouseButtonEventArgs e)
     {
         _isRectDragInProg = false;
         ((FrameworkElement)AdornedElement).Cursor = null;
         AdornedElement.ReleaseMouseCapture();
     }
 
-    void MouseMove(object sender, MouseEventArgs e)
+    void RectangleDrag(object sender, MouseEventArgs e)
     {
         if (!_isRectDragInProg) return;
 
@@ -175,7 +188,6 @@ public class ResizeAdorner : Adorner
 
     void Move(ClipArea clipArea, FrameworkElement parent, Point position, Point clickOffset)
     {
-
         var newRect = clipArea.RectArea;
 
         newRect.X = Math.Clamp(position.X - clickOffset.X, margin, parent.ActualWidth - newRect.Width - margin);
@@ -216,12 +228,13 @@ public class ResizeAdorner : Adorner
             thumb.Arrange(GetRect(thumb.Orientation, AdornedElement.DesiredSize));
         }
 
-        // _outlinedTextBlock.Text = ((ClipArea)_outlinedTextBlock.DataContext).Name;
-        // _outlinedTextBlock.Measure(finalSize);
-        // _outlinedTextBlock.Arrange(new Rect(0, 34, 1000000, _outlinedTextBlock.DesiredSize.Height));
-
         _outlinedTextBox.Measure(finalSize);
         _outlinedTextBox.Arrange(new Rect(0, -24, finalSize.Width, _outlinedTextBox.DesiredSize.Height));
+        var foo = _outlinedTextBox.TransformToVisual(Parent).Transform(new Point(0, 0));
+        if (foo.Y < margin)
+        {
+            _outlinedTextBox.Arrange(new Rect(6, 6, finalSize.Width, _outlinedTextBox.DesiredSize.Height));
+        }
 
         return base.ArrangeOverride(finalSize);
     }
@@ -278,79 +291,53 @@ public class ResizeAdorner : Adorner
         Resize(((DirectionalThumb)sender).Orientation, delta);
     }
 
-    private void Resize(CompassOrientation compassOrientation, Vector delta)
+    private void Resize(CompassOrientation orientation, Vector delta)
     {
         var clipArea = ((ContentPresenter)AdornedElement).Content as ClipArea;
 
-
         Debug.Assert(clipArea != null, nameof(clipArea) + " != null");
 
-        var newWidth = compassOrientation switch
-        {
-            CompassOrientation.NorthWest or CompassOrientation.West or CompassOrientation.SouthWest =>
-                clipArea.RectArea.Width - delta.X,
-            CompassOrientation.NorthEast or CompassOrientation.East or CompassOrientation.SouthEast =>
-                clipArea.RectArea.Width + delta.X,
-            _ => clipArea.RectArea.Width
-        };
-
-        var newHeight = compassOrientation switch
-        {
-            CompassOrientation.NorthWest or CompassOrientation.North or CompassOrientation.NorthEast =>
-                clipArea.RectArea.Height - delta.Y,
-            CompassOrientation.SouthWest or CompassOrientation.South or CompassOrientation.SouthEast =>
-                clipArea.RectArea.Height + delta.Y,
-            _ => clipArea.RectArea.Height
-        };
-
-
-        newWidth = Math.Max(newWidth, 20);
-        newHeight = Math.Max(newHeight, 20);
-
-
         var newX = clipArea.RectArea.Left;
-
-        if (Math.Abs(newWidth - clipArea.RectArea.Width) > Tolerance)
-        {
-            newX = compassOrientation switch
-            {
-                CompassOrientation.SouthWest or CompassOrientation.West or CompassOrientation.NorthWest =>
-                    clipArea.RectArea.Left + delta.X,
-                _ => clipArea.RectArea.Left
-            };
-        }
-
         var newY = clipArea.RectArea.Top;
+        var newWidth = clipArea.RectArea.Width;
+        var newHeight = clipArea.RectArea.Height;
 
-        if (Math.Abs(newHeight - clipArea.RectArea.Height) > Tolerance)
+        // Adjust delta based on orientation and bounds
+        if (orientation is CompassOrientation.West or CompassOrientation.NorthWest or CompassOrientation.SouthWest)
         {
-            newY = compassOrientation switch
+            delta.X = Math.Max(delta.X, margin - clipArea.RectArea.X);
+            newWidth = Math.Max(newWidth - delta.X, 20);
+            if (Math.Abs(newWidth - clipArea.RectArea.Width) > Tolerance)
             {
-                CompassOrientation.NorthWest or CompassOrientation.North or CompassOrientation.NorthEast =>
-                    clipArea.RectArea.Top + delta.Y,
-                _ => clipArea.RectArea.Top
-            };
+                newX += delta.X;
+            }
         }
-        //
-        // if (newWidth < 20)
-        // {
-        //     newX = clipArea.RectArea.Left;
-        //     newWidth = 20;
-        // }
+        else if (orientation is CompassOrientation.East or CompassOrientation.NorthEast or CompassOrientation.SouthEast)
+        {
+            delta.X = Math.Min(delta.X, Parent.ActualWidth - margin - clipArea.RectArea.X - clipArea.RectArea.Width);
+            newWidth = Math.Max(newWidth + delta.X, 20);
+        }
 
-        var newSize = new Rect(
-            newX,
-            newY,
-            newWidth,
-            newHeight);
+        if (orientation is CompassOrientation.North or CompassOrientation.NorthWest or CompassOrientation.NorthEast)
+        {
+            delta.Y = Math.Max(delta.Y, margin - clipArea.RectArea.Y);
+            newHeight = Math.Max(newHeight - delta.Y, 20);
+            if (Math.Abs(newHeight - clipArea.RectArea.Height) > Tolerance)
+            {
+                newY += delta.Y;
+            }
+        }
+        else if (orientation is CompassOrientation.South or CompassOrientation.SouthWest
+                 or CompassOrientation.SouthEast)
+        {
+            delta.Y = Math.Min(delta.Y, Parent.ActualHeight - margin - clipArea.RectArea.Y - clipArea.RectArea.Height);
+            newHeight = Math.Max(newHeight + delta.Y, 20);
+        }
 
-        
-        // TODO: Refactor this to prevent extreme and out of bounds sizing
-        
-        
-        
-        clipArea.RectArea = newSize;
+        // Set the new size
+        clipArea.RectArea = new Rect(newX, newY, newWidth, newHeight);
     }
+
 
     private const double Tolerance = 0.0001;
 }

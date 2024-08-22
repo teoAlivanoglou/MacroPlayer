@@ -22,19 +22,21 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
     </Window.Resources>
-    
+
     <ItemsControl Name="TheCanvas" ItemsSource="{Binding clipAreas}" d:DataContext="{d:DesignInstance local:ViewModel}">
         <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>
-                <Canvas/>
+                <Canvas />
             </ItemsPanelTemplate>
         </ItemsControl.ItemsPanel>
         <ItemsControl.ItemTemplate>
             <DataTemplate>
-                <Rectangle Width="{Binding RectArea.Width}" Height="{Binding RectArea.Height}">
+                
+                <Rectangle Width="{Binding RectArea.Width}" Height="{Binding RectArea.Height}" Loaded="RectangleLoaded">
                     <Rectangle.Fill>
-                        <SolidColorBrush Color="{Binding FillColor}"/>
+                        <SolidColorBrush Color="{Binding FillColor}" />
                     </Rectangle.Fill>
                 </Rectangle>
             </DataTemplate>
@@ -46,5 +48,5 @@
             </Style>
         </ItemsControl.ItemContainerStyle>
     </ItemsControl>
-    
+
 </Window>

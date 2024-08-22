@@ -33,7 +33,7 @@
                 </Style>
             </Button.Style>
         </Button>
- 
+ <Button Grid.Column="1" Grid.Row="0" Content="Capture" HorizontalAlignment="Left" Click="ButtonCaptureClick" Margin="4" Padding="4" FontSize="18"/>
         <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
             <Button Content="Add Overlay" HorizontalAlignment="Left" Padding="4" Margin="4" Click="ButtonAddRectClick"/>
             <ListView ItemsSource="{Binding clipAreas}" HorizontalContentAlignment="Stretch"
@@ -48,31 +48,6 @@
                 </ListView.ItemTemplate>
             </ListView>
         </StackPanel>
-        <!-- <Border Grid.Column="1" Grid.Row="0"> -->
-        <!--     <TextBlock Grid.Column="1" Grid.Row="0" Text="My Area Help!" FontSize="14" FontWeight="Bold" -->
-        <!--                Foreground="White"> -->
-        <!--         <TextBlock.Effect> -->
-        <!--             <DropShadowEffect ShadowDepth="0" Color="Black" Opacity="1" BlurRadius="5" /> -->
-        <!--         </TextBlock.Effect> -->
-        <!--     </TextBlock> -->
-        <!--     <Border.Effect> -->
-        <!--         <DropShadowEffect ShadowDepth="0" Color="Black" Opacity="1" BlurRadius="4" /> -->
-        <!--     </Border.Effect> -->
-        <!-- </Border> -->
-        <!-- -->
-        <!-- -->
-        <!-- <Border Grid.Column="1" Grid.Row="1"> -->
-        <!--     <TextBox Grid.Column="1" Grid.Row="0" Text="My Area Help!" FontSize="14" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Transparent" -->
-        <!--                Foreground="White" BorderThickness="0"> -->
-        <!--         <TextBox.Effect> -->
-        <!--             <DropShadowEffect ShadowDepth="0" Color="Black" Opacity="1" BlurRadius="5" /> -->
-        <!--         </TextBox.Effect> -->
-        <!--     </TextBox> -->
-        <!--     <Border.Effect> -->
-        <!--         <DropShadowEffect ShadowDepth="0" Color="Black" Opacity="1" BlurRadius="4" /> -->
-        <!--     </Border.Effect> -->
-        <!-- </Border> -->
-
     </Grid>
 
 </Window>

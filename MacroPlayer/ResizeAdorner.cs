@@ -31,7 +31,7 @@ public class ResizeAdorner : Adorner
 
     private readonly Rectangle _border;
 
-    const double margin = 8;
+    public static double margin = 8;
 
     private FrameworkElement Parent { get; init; }
 

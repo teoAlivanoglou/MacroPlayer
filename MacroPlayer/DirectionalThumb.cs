@@ -7,17 +7,11 @@ public class DirectionalThumb : Thumb
 {
     public CompassOrientation Orientation
     {
-        get
-        {
-            return (CompassOrientation)GetValue(OrientationProperty);
-        }
-        set
-        {
-            SetValue(OrientationProperty, value);
-        }
+        get => (CompassOrientation)GetValue(OrientationProperty);
+        init => SetValue(OrientationProperty, value);
     }
     
     public static readonly DependencyProperty
-        OrientationProperty = DependencyProperty.Register("Orientation",
-            typeof(string), typeof(DirectionalThumb), new PropertyMetadata(""));
+        OrientationProperty = DependencyProperty.Register(nameof(Orientation),
+            typeof(CompassOrientation), typeof(DirectionalThumb), new PropertyMetadata(CompassOrientation.North));
 }

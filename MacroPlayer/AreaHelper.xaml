@@ -11,90 +11,40 @@
         Title="AreaHelper" Height="450" Width="800"
         Background="Transparent">
     <Window.Resources>
-        <Style TargetType="Thumb">
+        <Style TargetType="local:DirectionalThumb">
             <Setter Property="Width" Value="30" />
             <Setter Property="Height" Value="30" />
             <Setter Property="Template">
                 <Setter.Value>
-                    <ControlTemplate TargetType="Thumb">
+                    <ControlTemplate TargetType="local:DirectionalThumb">
                         <Ellipse Fill="White" Stroke="#1a1a1a" StrokeThickness="1" Width="10" Height="10" />
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
     </Window.Resources>
-    <Canvas>
-        <AdornerDecorator>
-            <Rectangle Fill="Aqua" Width="200" Height="120" Margin="100"
-                       ab:AdornerBehavior.IsEnabled="True"
-                       Name="MyRectangle">
-                <ab:AdornerBehavior.Adorners>
-                    <local:OutlinedTextBlock
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Top"
-                        Text="Test"
-                        Fill="White"
-                        Stroke="Black"
-                        StrokeThickness="2"
-                        FontSize="14"
-                        FontWeight="Bold"
-                        ab:AdornerBehavior.HorizontalPlacement="Inside"
-                        ab:AdornerBehavior.VerticalPlacement="Outside" />
-                    <Thumb Style="{StaticResource Foo}"
-                           HorizontalAlignment="Right"
-                           VerticalAlignment="Top"
-                           ab:AdornerBehavior.HorizontalPlacement="Across"
-                           ab:AdornerBehavior.VerticalPlacement="Across" />
-                    <Thumb Style="{StaticResource Foo}"
-                           HorizontalAlignment="Left"
-                           VerticalAlignment="Top"
-                           ab:AdornerBehavior.HorizontalPlacement="Across"
-                           ab:AdornerBehavior.VerticalPlacement="Across" />
-                    <Thumb Style="{StaticResource Foo}"
-                           HorizontalAlignment="Left"
-                           VerticalAlignment="Bottom"
-                           ab:AdornerBehavior.HorizontalPlacement="Across"
-                           ab:AdornerBehavior.VerticalPlacement="Across" />
-                    <Thumb Style="{StaticResource Foo}"
-                           HorizontalAlignment="Right"
-                           VerticalAlignment="Bottom"
-                           ab:AdornerBehavior.HorizontalPlacement="Across"
-                           ab:AdornerBehavior.VerticalPlacement="Across" />
-
-                    <Thumb Style="{StaticResource Foo}"
-                           HorizontalAlignment="Right"
-                           VerticalAlignment="Center"
-                           ab:AdornerBehavior.HorizontalPlacement="Across"
-                           ab:AdornerBehavior.VerticalPlacement="Across" />
-
-                    <Thumb Style="{StaticResource Foo}"
-                           HorizontalAlignment="Left"
-                           VerticalAlignment="Center"
-                           ab:AdornerBehavior.HorizontalPlacement="Across"
-                           ab:AdornerBehavior.VerticalPlacement="Across" />
-
-                    <Thumb Style="{StaticResource Foo}"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Top"
-                           DragDelta="Thumb_OnDragDelta"
-                           ab:AdornerBehavior.HorizontalPlacement="Across"
-                           ab:AdornerBehavior.VerticalPlacement="Across">
-                    </Thumb>
-
-
-                    <local:DirectionalThumb Style="{StaticResource Foo}"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Bottom"
-                        DragDelta="Thumb_OnDragDelta"
-                        Orientation="South"
-                        ab:AdornerBehavior.HorizontalPlacement="Across"
-                        ab:AdornerBehavior.VerticalPlacement="Across">
-                    </local:DirectionalThumb>
-
-
-                </ab:AdornerBehavior.Adorners>
-            </Rectangle>
-
-        </AdornerDecorator>
-    </Canvas>
+    
+    <ItemsControl Name="TheCanvas" ItemsSource="{Binding clipAreas}" d:DataContext="{d:DesignInstance local:ViewModel}">
+        <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+                <Canvas/>
+            </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        <ItemsControl.ItemTemplate>
+            <DataTemplate>
+                <Rectangle Canvas.Left="{Binding  RectArea.Left}" Canvas.Top="{Binding RectArea.Top}" Width="{Binding RectArea.Width}" Height="{Binding RectArea.Height}">
+                    <Rectangle.Fill>
+                        <SolidColorBrush Color="{Binding FillColor}"/>
+                    </Rectangle.Fill>
+                </Rectangle>
+            </DataTemplate>
+        </ItemsControl.ItemTemplate>
+        <ItemsControl.ItemContainerStyle>
+            <Style TargetType="ContentPresenter">
+                <Setter Property="Canvas.Left" Value="{Binding RectArea.X}" />
+                <Setter Property="Canvas.Top" Value="{Binding RectArea.Y}" />
+            </Style>
+        </ItemsControl.ItemContainerStyle>
+    </ItemsControl>
+    
 </Window>
